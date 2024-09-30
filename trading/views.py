@@ -4,11 +4,11 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
 
-from .models import Candle, Bet, UserProfile, ChartType
+from .models import Candle, Bet, UserProfile, ChartType,ManualControl
 from django.db import transaction
 import json
 from django.utils import timezone
-from .forms import BetForm, CandleForm
+from .forms import BetForm, CandleForm, ManualControlForm
 
 
 def home(request):
@@ -123,7 +123,11 @@ def admin_panel(request):
     candles = Candle.objects.filter(chart_type=chart_type).order_by('-time')[:30]
     last_candle = candles.first()  # Get the most recent candle
     
-    # Подготовка данных для графика
+    # Initialize forms
+    candle_form = CandleForm()
+    manual_control_form = ManualControlForm()
+    
+    # Prepare chart data
     chart_data = {
         'labels': [],
         'open': [],
@@ -147,18 +151,25 @@ def admin_panel(request):
                 candle.chart_type = chart_type
                 candle.save()
                 return redirect('admin_panel')
-    else:
-        bet_form = BetForm()
-        candle_form = CandleForm()
+        elif 'add_manual_control' in request.POST:
+            manual_control_form = ManualControlForm(request.POST)
+            if manual_control_form.is_valid():
+                manual_control = manual_control_form.save(commit=False)
+                manual_control.chart_type = chart_type
+                manual_control.save()
+                return redirect('admin_panel')
+    
+    manual_controls = ManualControl.objects.filter(chart_type=chart_type).order_by('-time')[:10]
     
     context = {
         'chart_types': chart_types,
         'selected_chart_type': chart_type,
         'candles': candles,
-        'bet_form': bet_form,
         'candle_form': candle_form,
+        'manual_control_form': manual_control_form,
+        'manual_controls': manual_controls,
         'chart_data': json.dumps(chart_data),
         'current_price': last_candle.close_price if last_candle else 0,
-        'last_candle': last_candle,  # Add the last candle to the context
+        'last_candle': last_candle,
     }
     return render(request, 'trading/admin_panel.html', context)

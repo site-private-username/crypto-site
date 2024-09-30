@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.utils import timezone
 
 class ChartType(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -47,3 +49,20 @@ class Bet(models.Model):
 
     def __str__(self):
         return f"{self.user.username}'s bet of ${self.amount} on {self.chart_type.symbol} {self.prediction}"
+
+
+
+class ManualControl(models.Model):
+    chart_type = models.ForeignKey(ChartType, on_delete=models.CASCADE)
+    time = models.DateTimeField(validators=[
+        MinValueValidator(limit_value=timezone.now() - timezone.timedelta(days=1)),
+        MaxValueValidator(limit_value=timezone.now() + timezone.timedelta(minutes=1))
+    ])
+    value = models.IntegerField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-time']
+
+    def __str__(self):
+        return f"{self.chart_type.name} - {self.time}: {self.value}"

@@ -40,6 +40,20 @@
     <button type="submit" name="add_candle">Add Candle</button>
 </form>
 
+<h3>Add Manual Control</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ manual_control_form.as_p }}
+    <button type="submit" name="add_manual_control">Add Manual Control</button>
+</form>
+
+<h3>Recent Manual Controls</h3>
+<ul>
+    {% for control in manual_controls %}
+    <li>Time: {{ control.time }}, Value: {{ control.value }}</li>
+    {% endfor %}
+</ul>
+
 <h3>Recent Candles</h3>
 <ul>
     {% for candle in candles %}

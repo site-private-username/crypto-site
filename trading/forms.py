@@ -1,5 +1,5 @@
 from django import forms
-from .models import Bet, Candle, ChartType
+from .models import Bet, Candle, ChartType, ManualControl
 from django.utils import timezone
 from datetime import timedelta
 
@@ -27,3 +27,32 @@ class CandleForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['time'].input_formats = ['%Y-%m-%dT%H:%M']
+
+class ManualControlForm(forms.ModelForm):
+    class Meta:
+        model = ManualControl
+        fields = ['time', 'value']
+        widgets = {
+            'time': forms.DateTimeInput(
+                attrs={
+                    'type': 'datetime-local',
+                    'class': 'form-control',
+                    'min': (timezone.now() - timezone.timedelta(days=1)).strftime('%Y-%m-%dT%H:%M'),
+                    'max': (timezone.now() + timezone.timedelta(minutes=1)).strftime('%Y-%m-%dT%H:%M'),
+                }
+            ),
+            'value': forms.NumberInput(attrs={'class': 'form-control'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['time'].input_formats = ['%Y-%m-%dT%H:%M']
+
+    def clean_time(self):
+        time = self.cleaned_data.get('time')
+        if time:
+            min_time = timezone.now() - timezone.timedelta(days=1)
+            max_time = timezone.now() + timezone.timedelta(minutes=1)
+            if time < min_time or time > max_time:
+                raise forms.ValidationError("Time must be within the last 24 hours or up to 1 minute in the future.")
+        return time
