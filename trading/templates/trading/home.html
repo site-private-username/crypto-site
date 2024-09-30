@@ -1,0 +1,15 @@
+{% extends 'trading/base.html' %}
+
+{% block content %}
+<h1>Welcome to Crypto Trading Simulation</h1>
+<p>Test your trading skills with our crypto simulation platform!</p>
+
+{% if user.is_authenticated %}
+    <p>Hello, {{ user.username }}! Ready to start trading?</p>
+    <a href="{% url 'dashboard' %}">Go to Dashboard</a>
+{% else %}
+    <p>Please log in to start trading or register for a new account.</p>
+    <a href="{% url 'login' %}">Log In</a>
+    <a href="{% url 'register' %}">Register</a>
+{% endif %}
+{% endblock %}

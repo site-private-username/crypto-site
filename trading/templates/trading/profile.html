@@ -1,0 +1,14 @@
+{% extends 'trading/base.html' %}
+
+{% block content %}
+<h2>User Profile</h2>
+<p>Username: {{ user.username }}</p>
+<p>Balance: ${{ user_profile.balance }}</p>
+
+<h3>Recent Bets</h3>
+<ul>
+    {% for bet in recent_bets %}
+    <li>Amount: ${{ bet.amount }}, Prediction: {{ bet.prediction }}, Result: {{ bet.result }}, Chart: {{bet.chart_type.name}}</li>
+    {% endfor %}
+</ul>
+{% endblock %}

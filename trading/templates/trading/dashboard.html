@@ -1,0 +1,100 @@
+{% extends 'trading/base.html' %}
+{% load static %}
+
+{% block content %}
+<h2>Trading Dashboard</h2>
+<p>Your balance: ${{ user.userprofile.balance }}</p>
+
+<form method="get" id="chart-type-form">
+    <label for="chart_type">Select Chart Type:</label>
+    <select name="chart_type" id="chart_type" onchange="this.form.submit()">
+        {% for chart_type in chart_types %}
+            <option value="{{ chart_type.id }}" {% if chart_type == selected_chart_type %}selected{% endif %}>
+                {{ chart_type.name }}
+            </option>
+        {% endfor %}
+    </select>
+</form>
+
+<div id="candlestickChart" style="width: 100%; height: 400px;"></div>
+
+<h3>Current Price: ${{ current_price }}</h3>
+
+<h3>Place a Bet on {{ selected_chart_type.name }}</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ bet_form.as_p }}
+    <button type="submit" name="place_bet">Place Bet</button>
+</form>
+
+<h3>Your Recent Bets</h3>
+<ul>
+    {% for bet in user_bets %}
+    <li>
+        {{ bet.created_at|date:"Y-m-d H:i" }} - 
+        {{ bet.chart_type.name }}: 
+        ${{ bet.amount }} on {{ bet.get_prediction_display }} 
+        ({{ bet.get_result_display }})
+    </li>
+    {% empty %}
+    <li>You haven't placed any bets yet.</li>
+    {% endfor %}
+</ul>
+
+<h3>Recent Candles</h3>
+<ul>
+    {% for candle in candles %}
+    <li>Time: {{ candle.time }}, Open: {{ candle.open_price }}, Close: {{ candle.close_price }}, Min: {{ candle.min_price }}, Max: {{ candle.max_price }}</li>
+    {% endfor %}
+</ul>
+
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<script>
+    var chartData = JSON.parse('{{ chart_data|safe }}');
+    
+    var options = {
+        series: [{
+            data: chartData.labels.map((t, i) => ({
+                x: new Date(t).getTime(),
+                y: [chartData.open[i], chartData.high[i], chartData.low[i], chartData.close[i]]
+            }))
+        }],
+        chart: {
+            type: 'candlestick',
+            height: 400
+        },
+        title: {
+            text: '{{ selected_chart_type.name }} Candlestick Chart',
+            align: 'left'
+        },
+        xaxis: {
+            type: 'datetime'
+        },
+        yaxis: {
+            tooltip: {
+                enabled: true
+            }
+        },
+        tooltip: {
+            enabled: true,
+            custom: function({seriesIndex, dataPointIndex, w}) {
+                var o = w.globals.seriesCandleO[seriesIndex][dataPointIndex]
+                var h = w.globals.seriesCandleH[seriesIndex][dataPointIndex]
+                var l = w.globals.seriesCandleL[seriesIndex][dataPointIndex]
+                var c = w.globals.seriesCandleC[seriesIndex][dataPointIndex]
+                return (
+                    '<div class="apexcharts-tooltip-box">' +
+                    '<div>Open: $' + o.toFixed(2) + '</div>' +
+                    '<div>High: $' + h.toFixed(2) + '</div>' +
+                    '<div>Low: $' + l.toFixed(2) + '</div>' +
+                    '<div>Close: $' + c.toFixed(2) + '</div>' +
+                    '</div>'
+                )
+            }
+        }
+    };
+
+    var chart = new ApexCharts(document.querySelector("#candlestickChart"), options);
+    chart.render();
+</script>
+{% endblock %}
