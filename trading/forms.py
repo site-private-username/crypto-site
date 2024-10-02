@@ -5,11 +5,34 @@ from datetime import timedelta
 
 class BetForm(forms.ModelForm):
     chart_type = forms.ModelChoiceField(queryset=ChartType.objects.all(), widget=forms.HiddenInput())
+    duration = forms.IntegerField(
+        min_value=1,
+        max_value=60,
+        initial=5,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Duration in minutes'})
+    )
+    amount = forms.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        min_value=1,
+        widget=forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Bet amount'})
+    )
 
     class Meta:
         model = Bet
-        fields = ['amount', 'prediction', 'chart_type']
+        fields = ['amount', 'duration', 'chart_type']
 
+    def clean_duration(self):
+        duration = self.cleaned_data['duration']
+        return timezone.now() + timezone.timedelta(minutes=duration)
+
+    def save(self, commit=True):
+        instance = super().save(commit=False)
+        instance.duration = self.cleaned_data['duration']
+        if commit:
+            instance.save()
+        return instance
+        
 class CandleForm(forms.ModelForm):
     class Meta:
         model = Candle

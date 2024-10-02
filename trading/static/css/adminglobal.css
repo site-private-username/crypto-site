@@ -1,0 +1,61 @@
+body {
+  margin: 0;
+  line-height: normal;
+}
+
+:root {
+  /* fonts */
+  --pocketoptioncom-nunito-sans-bold-16-upper: "Nunito Sans";
+  --font-open-sans: "Open Sans";
+  --font-inter: Inter;
+
+  /* font sizes */
+  --pocketoptioncom-nunito-sans-bold-16-upper-size: 1rem;
+  --font-size-xs: 0.75rem;
+  --font-size-lg: 1.125rem;
+  --font-size-sm: 0.875rem;
+  --font-size-mini: 0.938rem;
+
+  /* Colors */
+  --color-gray-100: #2a2b30;
+  --color-dimgray-100: #54565f;
+  --color-mediumseagreen-100: #6fc274;
+  --color-lightslategray-100: #868893;
+  --color-lightslategray-200: #7d879d;
+  --color-whitesmoke: #f6f7f7;
+  --color-lightgray: #d1d4dc;
+  --color-lightsteelblue: #8ea5c0;
+
+  /* Gaps */
+  --gap-xl: 1.25rem;
+  --gap-9xs: 0.25rem;
+  --gap-14xl: 2.062rem;
+  --gap-8xs: 0.312rem;
+
+  /* Paddings */
+  --padding-base: 1rem;
+  --padding-mini: 0.937rem;
+  --padding-xl: 1.25rem;
+  --padding-xl-5: 1.281rem;
+  --padding-12xs: 0.062rem;
+  --padding-10xs: 0.187rem;
+  --padding-9xs: 0.25rem;
+  --padding-sm: 0.875rem;
+  --padding-2xs: 0.687rem;
+  --padding-7xs: 0.375rem;
+  --padding-6xs: 0.437rem;
+  --padding-5xs: 0.5rem;
+  --padding-11xs: 0.125rem;
+  --padding-15xl: 2.125rem;
+  --padding-12xl: 1.937rem;
+  --padding-4xl: 1.437rem;
+  --padding-smi: 0.812rem;
+  --padding-xs: 0.75rem;
+
+  /* Border radiuses */
+  --br-5xs: 8px;
+  --br-9xs: 4px;
+  --br-xs: 12px;
+  --br-3xs: 10px;
+  --br-8xs: 5px;
+}

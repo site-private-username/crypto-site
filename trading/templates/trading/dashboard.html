@@ -2,99 +2,302 @@
 {% load static %}
 
 {% block content %}
-<h2>Trading Dashboard</h2>
-<p>Your balance: ${{ user.userprofile.balance }}</p>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
 
-<form method="get" id="chart-type-form">
-    <label for="chart_type">Select Chart Type:</label>
-    <select name="chart_type" id="chart_type" onchange="this.form.submit()">
-        {% for chart_type in chart_types %}
-            <option value="{{ chart_type.id }}" {% if chart_type == selected_chart_type %}selected{% endif %}>
-                {{ chart_type.name }}
-            </option>
-        {% endfor %}
-    </select>
-</form>
+    <link rel="stylesheet" href="{% static 'css/adminglobal.css' %}">
+    <link rel="stylesheet" href="{% static 'css/adminindex.css' %}">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Nunito Sans:wght@400;700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Open Sans:wght@300;400;600;700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@600&display=swap"
+    />
+  </head>
+  <body>
 
-<div id="candlestickChart" style="width: 100%; height: 400px;"></div>
+    <style>
+        .bet-form-input {
+            background-color: #333333;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 10px;
+            width: 100%;
+            font-size: 16px;
+        }
+        .bet-form-label {
+            color: #888888;
+            font-size: 14px;
+            margin-bottom: 5px;
+            display: block;
+        }
+        .bet-form-group {
+            margin-bottom: 15px;
+        }
+    </style>
 
-<h3>Current Price: ${{ current_price }}</h3>
+    <div class="pocketoptioncom-by-htmltode">
+      <header class="header">
+        <div class="vector-wrapper">
+          <img
+            class="vector-icon"
+            loading="lazy"
+            alt=""
+            src="{% static 'images/vectoradmin.svg' %}"
+          />
+        </div>
+        <div class="frame-parent">
+          <div class="frame-wrapper">
+            <div class="frame-group">
+              <div class="demo-account-parent">
+                <a class="demo-account">Demo account</a>
+                <a class="a">${{ user.userprofile.balance }}</a>
+              </div>
+              <img
+                class="vui-icon.svg'"
+                alt=""
+                src="{% static 'images/vuiicon-.svg' %}"
+              />
+            </div>
+          </div>
+          <div class="frame-container">
+            <button class="deposit-wrapper">
+              <a class="deposit">Deposit</a>
+            </button>
+          </div>
+          <img
+            class="container-icon"
+            loading="lazy"
+            alt=""
+            src="{% static 'images/container.svg' %}"
+          />
+        </div>
+      </header>
+      <main class="frame-main">
+        <div class="background-parent">
+          <div class="background">
+            <div class="wrapper">
+              <form method="get" id="chart-type-form">
+                <select name="chart_type" id="chart_type" onchange="this.form.submit()">
+                  {% for chart_type in chart_types %}
+                    <option value="{{ chart_type.id }}" {% if chart_type == selected_chart_type %}selected{% endif %}>
+                      {{ chart_type.name }}
+                    </option>
+                  {% endfor %}
+                </select>
+              </form>
+            </div>
+            <div class="chart-tools-wrapper">
+                <div class="chart-tools">
+                  <div class="tools">
+                    <button class="button">1м</button>
+                    </div>
 
-<h3>Place a Bet on {{ selected_chart_type.name }}</h3>
-<form method="post">
-    {% csrf_token %}
-    {{ bet_form.as_p }}
-    <button type="submit" name="place_bet">Place Bet</button>
-</form>
+                    <div class="tools">
+                        <img
+                          class="vector-icon1"
+                          alt=""
+                          src="{% static 'images/vector-11.svg' %}"
+                        />
+                      </div>
 
-<h3>Your Recent Bets</h3>
-<ul>
-    {% for bet in user_bets %}
-    <li>
-        {{ bet.created_at|date:"Y-m-d H:i" }} - 
-        {{ bet.chart_type.name }}: 
-        ${{ bet.amount }} on {{ bet.get_prediction_display }} 
-        ({{ bet.get_result_display }})
-    </li>
-    {% empty %}
-    <li>You haven't placed any bets yet.</li>
-    {% endfor %}
-</ul>
+                    <div class="tools1">
+                      <img
+                        class="chart-tool-icon"
+                        alt=""
+                        src="{% static 'images/vector-22.svg' %}"
+                      />
+      
+                      <img
+                        class="chart-tool-icon1"
+                        alt=""
+                        src="{% static 'images/vector-33.svg' %}"
+                      />
+                    </div>
+                    <div class="tools">
+                      <img
+                        class="vector-icon1"
+                        alt=""
+                        src="{% static 'images/vector-44.svg' %}"
+                      />
+                    </div>
+                    
+                  </div>
+                  
+                </div>
+      
+            <div class="background-inner">
+       
+            </div>
+     
+          </div>
+          <div class="list-item-wrapper">
+            <div class="list-item">
+              <div class="audcad">{{ selected_chart_type.name }}</div>
+              <div class="trade-info">
+                <a class="trade-rate">{{ current_price }}</a>
+                <div class="trade-percent">$</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+   <div  id="candlestickChart" style="width: 100%; height: 400px;">
 
-<h3>Recent Candles</h3>
-<ul>
-    {% for candle in candles %}
-    <li>Time: {{ candle.time }}, Open: {{ candle.open_price }}, Close: {{ candle.close_price }}, Min: {{ candle.min_price }}, Max: {{ candle.max_price }}</li>
-    {% endfor %}
-</ul>
+    <a class="demo-account">
+        <h3>Your Recent Bets</h3>
+  
+          {% for bet in user_bets %}
+          <li>
+            {{ bet.created_at|date:"Y-m-d H:i" }} - 
+            {{ bet.chart_type.name }}: 
+            ${{ bet.amount }} on {{ bet.get_prediction_display }} 
+            ({{ bet.get_result_display }})
+          </li>
+          {% empty %}
+          <li>You haven't placed any bets yet.</li>
+          {% endfor %}
+        
+    </a>
 
-<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
-<script>
-    var chartData = JSON.parse('{{ chart_data|safe }}');
-    
-    var options = {
+   </div>
+
+
+        <form method="post" id="betting-form" class="app-panel">
+            {% csrf_token %}
+            {{ bet_form.chart_type }}
+        
+            <div class="binary-time-input-vui-input">
+                <div class="trade-buttons">
+                    <div class="parent">
+                        <div class="div1">Duration (minutes)</div>
+                        
+                        {{ bet_form.duration }}
+                    </div>
+                </div>
+            </div>
+            <div class="binary-time-input-vui-input">
+                <div class="trade-buttons">
+                    <div class="parent">
+                        <div class="div1">Amount ($)</div>
+                        {{ bet_form.amount }}
+                    </div>
+                </div>
+            </div>
+            <div class="backgroundborder-wrapper">
+              <div class="backgroundborder">
+                <div class="result-values">
+                  <div class="div4">Payout</div>
+                </div>
+                <div class="backgroundborder-inner">
+                  <div class="payout-value-parent">
+                    <b class="payout-value">+92</b>
+                    <div class="payout-percent-wrapper">
+                      <b class="payout-percent">%</b>
+                    </div>
+                  </div>
+                </div>
+                <div class="result-values1">
+                  <div class="div5">$19.2</div>
+                </div>
+                <div class="div4">Profit</div>
+                <div class="result-values2">
+                  <div class="div4">+$9.2</div>
+                </div>
+              </div>
+            </div>
+            <div class="majority-opinion-parent">
+                <div class="majority-opinion">Majority opinion</div>
+                <div class="background-group">
+                  <div class="background1">
+                    <div class="background2"></div>
+                  </div>
+                  <div class="opinion-values-parent">
+                    <div class="opinion-values">64%</div>
+                    <div class="opinion-values1">36%</div>
+                  </div>
+                </div>
+              </div>
+              <button class="button1" type="submit" name="place_bet" value="UP">
+                <b class="b">Buy</b>
+            </button>
+            <button class="button2" type="submit" name="place_bet" value="DOWN">
+                <b class="b1">Sell</b>
+            </button>
+
+            
+        </form>
+ 
+      </main>
+      
+
+    </div>
+
+
+    </div>
+
+
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script>
+      var chartData = JSON.parse('{{ chart_data|safe }}');
+      
+      var options = {
         series: [{
-            data: chartData.labels.map((t, i) => ({
-                x: new Date(t).getTime(),
-                y: [chartData.open[i], chartData.high[i], chartData.low[i], chartData.close[i]]
-            }))
+          data: chartData.labels.map((t, i) => ({
+            x: new Date(t).getTime(),
+            y: [chartData.open[i], chartData.high[i], chartData.low[i], chartData.close[i]]
+          }))
         }],
         chart: {
-            type: 'candlestick',
-            height: 400
+          type: 'candlestick',
+          height: 400
         },
         title: {
-            text: '{{ selected_chart_type.name }} Candlestick Chart',
-            align: 'left'
+          text: '{{ selected_chart_type.name }} Candlestick Chart',
+          align: 'left'
         },
         xaxis: {
-            type: 'datetime'
+          type: 'datetime'
         },
         yaxis: {
-            tooltip: {
-                enabled: true
-            }
+          tooltip: {
+            enabled: true
+          }
         },
         tooltip: {
-            enabled: true,
-            custom: function({seriesIndex, dataPointIndex, w}) {
-                var o = w.globals.seriesCandleO[seriesIndex][dataPointIndex]
-                var h = w.globals.seriesCandleH[seriesIndex][dataPointIndex]
-                var l = w.globals.seriesCandleL[seriesIndex][dataPointIndex]
-                var c = w.globals.seriesCandleC[seriesIndex][dataPointIndex]
-                return (
-                    '<div class="apexcharts-tooltip-box">' +
-                    '<div>Open: $' + o.toFixed(2) + '</div>' +
-                    '<div>High: $' + h.toFixed(2) + '</div>' +
-                    '<div>Low: $' + l.toFixed(2) + '</div>' +
-                    '<div>Close: $' + c.toFixed(2) + '</div>' +
-                    '</div>'
-                )
-            }
+          enabled: true,
+          custom: function({seriesIndex, dataPointIndex, w}) {
+            var o = w.globals.seriesCandleO[seriesIndex][dataPointIndex]
+            var h = w.globals.seriesCandleH[seriesIndex][dataPointIndex]
+            var l = w.globals.seriesCandleL[seriesIndex][dataPointIndex]
+            var c = w.globals.seriesCandleC[seriesIndex][dataPointIndex]
+            return (
+              '<div class="apexcharts-tooltip-box">' +
+              '<div>Open: $' + o.toFixed(2) + '</div>' +
+              '<div>High: $' + h.toFixed(2) + '</div>' +
+              '<div>Low: $' + l.toFixed(2) + '</div>' +
+              '<div>Close: $' + c.toFixed(2) + '</div>' +
+              '</div>'
+            )
+          }
         }
-    };
+      };
 
-    var chart = new ApexCharts(document.querySelector("#candlestickChart"), options);
-    chart.render();
-</script>
+      var chart = new ApexCharts(document.querySelector("#candlestickChart"), options);
+      chart.render();
+    </script>
+
+    
+  </body>
+</html>
 {% endblock %}

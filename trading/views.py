@@ -3,15 +3,21 @@ from django.contrib.auth import login, authenticate
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.decorators import login_required
 from django.db.models import Sum
-
+from django.contrib import messages
 from .models import Candle, Bet, UserProfile, ChartType,ManualControl
 from django.db import transaction
 import json
 from django.utils import timezone
 from .forms import BetForm, CandleForm, ManualControlForm
+from django.contrib.auth import logout
 
+def user_logout(request):
+    logout(request)
+    return redirect('home')  # или 'login', в зависимости от вашей структуры
 
 def home(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')
     return render(request, 'trading/home.html')
 
 def register(request):
@@ -20,15 +26,27 @@ def register(request):
         if form.is_valid():
             with transaction.atomic():
                 user = form.save()
-                UserProfile.objects.get_or_create(user=user)  # Use get_or_create instead of create
-            username = form.cleaned_data.get('username')
-            raw_password = form.cleaned_data.get('password1')
-            user = authenticate(username=username, password=raw_password)
-            login(request, user)
-            return redirect('home')
+                UserProfile.objects.get_or_create(user=user)
+            messages.success(request, 'Регистрация успешна. Теперь вы можете войти.')
+            return redirect('login')
     else:
         form = UserCreationForm()
     return render(request, 'trading/register.html', {'form': form})
+
+def user_login(request):
+    if request.user.is_authenticated:
+        return redirect('dashboard')  # Перенаправление на dashboard, если пользователь уже вошел в систему
+    
+    if request.method == 'POST':
+        username = request.POST['username']
+        password = request.POST['password']
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            return redirect('dashboard')  # Перенаправление на dashboard после успешного входа
+        else:
+            messages.error(request, 'Неверный email или пароль.')
+    return render(request, 'trading/Login.html')
 
 @login_required
 def dashboard(request):
@@ -42,7 +60,7 @@ def dashboard(request):
     
     candles = Candle.objects.filter(chart_type=chart_type).order_by('-time')[:30]
     
-    # Подготовка данных для графика
+    # Prepare chart data (unchanged)
     chart_data = {
         'labels': [],
         'open': [],
@@ -59,21 +77,27 @@ def dashboard(request):
         chart_data['low'].append(float(candle.min_price))
     
     if request.method == 'POST':
-        if 'place_bet' in request.POST:
-            bet_form = BetForm(request.POST)
-            if bet_form.is_valid():
-                bet = bet_form.save(commit=False)
-                bet.user = request.user
-                bet.chart_type = chart_type
-                if bet.amount <= request.user.userprofile.balance:
-                    request.user.userprofile.balance -= bet.amount
-                    request.user.userprofile.save()
-                    bet.save()
-                    return redirect('dashboard')
+        bet_form = BetForm(request.POST)
+        if bet_form.is_valid():
+            bet = bet_form.save(commit=False)
+            bet.user = request.user
+            bet.chart_type = chart_type
+            bet.prediction = request.POST.get('place_bet')  # 'UP' or 'DOWN'
+            
+            if bet.amount <= request.user.userprofile.balance:
+                request.user.userprofile.balance -= bet.amount
+                request.user.userprofile.save()
+                bet.save()
+                messages.success(request, f'Your {bet.get_prediction_display()} bet of ${bet.amount} for {bet_form.cleaned_data["duration"]} minutes has been placed successfully.')
+                return redirect('dashboard')
+            else:
+                messages.error(request, 'Insufficient funds to place the bet.')
+        else:
+            messages.error(request, 'Please check the form data and try again.')
     else:
         bet_form = BetForm(initial={'chart_type': chart_type.id})
     
-    # Получение последних ставок пользователя
+    # Get user's recent bets
     user_bets = Bet.objects.filter(user=request.user).order_by('-created_at')[:5]
     
     context = {

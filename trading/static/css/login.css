@@ -1,0 +1,214 @@
+/* Сброс стилей браузера */
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Основные стили для body и html */
+html, body {
+    height: 100%;
+    font-family: 'Roboto', sans-serif;
+    background-color: #f0f4f8;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 0 15px;
+}
+
+/* Контейнер для формы */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+/* Основной блок формы */
+.auth-box {
+    background-color: #fff;
+    border-radius: 16px;
+    padding: 40px;
+    box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1); /* Тень для блока */
+    width: 500px; /* Ширина уменьшена до 500px */
+    min-height: 520px; /* Высота установлена в 520px */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.auth-box:hover {
+    transform: scale(1.03); /* Эффект динамического увеличения при наведении */
+    box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15); /* Усиление тени */
+}
+
+/* Контейнер для всех элементов */
+.auth-content {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Кнопка со стрелкой */
+.back-button {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: #333;
+    transition: color 0.3s ease;
+}
+
+.back-button:hover {
+    color: #007bff;
+}
+
+/* Логотип */
+.auth-logo {
+    margin-bottom: 20px;
+}
+
+.auth-logo img {
+    max-width: 150px;
+}
+
+/* Заголовок формы */
+.auth-title {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+/* Подзаголовок */
+.auth-subtitle {
+    font-size: 14px;
+    margin-bottom: 25px;
+    text-align: center;
+}
+
+.auth-subtitle .link {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.auth-subtitle .link:hover {
+    text-decoration: underline;
+}
+
+/* Поля ввода формы */
+.form-group {
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.form-input {
+    width: 100%;
+    padding: 14px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 8px rgba(0, 123, 255, 0.4);
+}
+
+/* Чекбокс и ссылка на восстановление пароля */
+.form-actions {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    margin-bottom: 25px;
+}
+
+.form-remember {
+    display: flex;
+    align-items: center;
+}
+
+.form-forgot {
+    color: #007bff;
+    text-decoration: none;
+}
+
+.form-forgot:hover {
+    text-decoration: underline;
+}
+
+/* Кнопка "Войти" */
+.btn-primary {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    color: #fff;
+    background: linear-gradient(90deg, #007bff, #0056b3);
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-primary:hover {
+    box-shadow: 0 5px 20px rgba(0, 123, 255, 0.5);
+}
+
+/* Разделитель "или" */
+.separator {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    margin: 25px 0;
+    font-size: 14px;
+    color: #666;
+}
+
+.line {
+    flex-grow: 1;
+    height: 1px;
+    background-color: #ddd;
+    margin: 0 10px;
+}
+
+.or-text {
+    font-size: 14px;
+    color: #666;
+    font-weight: 500;
+}
+
+/* Кнопка входа через Google */
+.btn-google {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.btn-google:hover {
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Логотип Google */
+.google-logo {
+    width: 22px;
+    margin-right: 12px;
+}

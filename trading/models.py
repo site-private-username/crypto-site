@@ -43,6 +43,7 @@ class Bet(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     chart_type = models.ForeignKey(ChartType, on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    duration = models.DateTimeField(default=timezone.now())
     prediction = models.CharField(max_length=10, choices=[('UP', 'Up'), ('DOWN', 'Down')])
     created_at = models.DateTimeField(auto_now_add=True)
     result = models.CharField(max_length=10, choices=[('WIN', 'Win'), ('LOSS', 'Loss'), ('PENDING', 'Pending')], default='PENDING')

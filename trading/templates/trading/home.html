@@ -1,15 +1,515 @@
-{% extends 'trading/base.html' %}
+{% load static %}
 
 {% block content %}
-<h1>Welcome to Crypto Trading Simulation</h1>
-<p>Test your trading skills with our crypto simulation platform!</p>
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="initial-scale=1, width=device-width" />
 
-{% if user.is_authenticated %}
-    <p>Hello, {{ user.username }}! Ready to start trading?</p>
-    <a href="{% url 'dashboard' %}">Go to Dashboard</a>
-{% else %}
-    <p>Please log in to start trading or register for a new account.</p>
-    <a href="{% url 'login' %}">Log In</a>
-    <a href="{% url 'register' %}">Register</a>
-{% endif %}
-{% endblock %}
+    <link rel="stylesheet" href="{% static 'css/global.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Nunito Sans:wght@300;400;600;700&display=swap"
+    />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap"
+    />
+  </head>
+  <body>
+    <div class="w-dark">
+      <main class="section-parent">
+        <header class="section">
+          <div class="registration-image">
+            <img
+            class="registration-background"
+       
+            alt=""
+            src="{% static 'images/backphoto.png' %}"
+          />
+            <div class="registration-background"></div>
+            <div class="header">
+              <img
+                class="logo-icon"
+                loading="lazy"
+                alt=""
+                src="{% static 'images/logo.svg' %}"
+              />
+
+              <div class="header-navigation">
+                <div class="company-navigation-parent">
+                  <nav class="company-navigation">
+                    <nav class="container">
+                      <nav class="list">
+                        <div class="itemmargin">
+                          <div class="item">
+                            <div class="link">
+                              <button class="button">Быстрый старт</button>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="itemmargin1">
+                          <div class="item">
+                            <div class="link">
+                              <a class="a">Бесплатное демо</a>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="item">
+                          <div class="link">
+                            <a class="a1">О Компании</a>
+                          </div>
+                        </div>
+                      </nav>
+                    </nav>
+                  </nav>
+                  <div class="container1">
+                    <div class="margin">
+                      <div class="container2">
+                        <div class="container3">
+                          <div class="svgmargin">
+                            <div class="svg">
+                              <img
+                                class="frame-icon"
+                                loading="lazy"
+                                alt=""
+                                src="{% static 'images/frame@2x.png' %}"
+                              />
+                            </div>
+                          </div>
+                          <div class="margin1">
+                            <div class="container4">
+                              <a class="a">Русский</a>
+                              <div class="image">
+                                <div class="icon-drop-down-whitesvg-fill">
+                                  <img
+                                    class="icon-drop-down-whitesvg"
+                                    alt=""
+                                    src="{% static 'images/icondropdownwhitesvg.svg' %}"
+                                  />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="main-navigation">
+              <div class="navigation-items-container">
+                <div class="list1">
+                  <div class="itemmargin2">
+                    <div class="item3">
+                      <div class="link3">
+                        <a class="a3">Главная</a>
+                      </div>
+                      <div class="container5">
+                        <div class="indicator">/</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="item4">
+                    <div class="indicator">Быстрый старт</div>
+                  </div>
+                </div>
+                <div class="trading-navigation">
+                  <div class="trading-header-container">
+                    <h1 class="h1">Как торговать на</h1>
+                    <h1 class="h11">финансовых рынках</h1>
+                  </div>
+                  <div class="trading-broker">с Trading Broker</div>
+             
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+        <section class="section-group">
+          <div class="section1">
+            <h1 class="h12">Начните с нескольких простых шагов.</h1>
+          </div>
+          <div class="section2">
+            <div class="registration-steps-content">
+              <div class="registration-process">
+                <b class="registration-icon">1</b>
+                <b class="b">РЕГИСТРАЦИЯ</b>
+              </div>
+              <b class="google"
+                >Создайте бесплатный торговый счет, используя адрес электронной
+                почты или просто авторизуйтесь через учетную запись Google.</b
+              >
+              <b class="google1"
+                >Регистрация — довольно простой процесс. Вы можете выбрать один
+                из способов регистрации: зарегистрироваться с адресом
+                электронной почты, использовать свою учетную запись google.</b
+              >
+            </div>
+            <div class="container8">
+              <img
+                class="online-registration-icon"
+                loading="lazy"
+                alt=""
+                src="{% static 'images/onlineregistration@2x.png' %}"
+              />
+            </div>
+          </div>
+        </section>
+        <section class="section3">
+          <div class="stock-container">
+            <div class="container9">
+              <img
+                class="verification-icon"
+                loading="lazy"
+                alt=""
+                src="{% static 'images/verification@2x.png' %}"
+              />
+            </div>
+          </div>
+          <div class="trading-options-parent">
+            <div class="trading-options">
+              <div class="verification-trading">
+                <div class="verification-trading-headers">
+                  <b class="registration-icon">2</b>
+                  <b class="b">ВЕРИФИКАЦИЯ</b>
+                </div>
+              </div>
+              <b class="b2"
+                >Сделайте вашу учетную запись персонализированной. Укажите
+                личную информацию в профиль и загрузите документ, удостоверяющий
+                личность и адрес.</b
+              >
+            </div>
+            <b class="aml"
+              >Верификация — это обязательная процедура, необходимая для защиты
+              вашей учетной записи и средств от несанкционированного доступа, а
+              также для соблюдения всех финансовых положений и требований
+              AML.</b
+            >
+          </div>
+        </section>
+        <section class="section4">
+          <div class="container10">
+            <div class="deposit-process">
+              <div class="deposit-info">
+                <div class="deposit-details">
+                  <div class="deposit-header">
+                    <b class="registration-icon">3</b>
+                    <b class="b3">ПОПОЛНИТЬ</b>
+                  </div>
+                </div>
+                <b class="pocket-option"
+                  >Пополняйте баланс вашего торгового счета наиболее удобным
+                  способом. Время обработки зависит от использованного
+                  метода.</b
+                >
+              </div>
+              <b class="b5"
+                >Как только ваша учетная запись будет полностью проверена, вам
+                станут доступны все предлагаемые методы пополнения счета.
+                Выберите наиболее удобный для вас вариант. В зависимости от
+                выбранного метода может потребоваться некоторое время, чтобы
+                перевод отразился на вашем торговом счете</b
+              >
+            </div>
+          </div>
+          <div class="container11">
+            <img
+              class="donation-icon"
+              loading="lazy"
+              alt=""
+              src="{% static 'images/donation@2x.png' %}"
+            />
+          </div>
+        </section>
+        <section class="section5">
+          <div class="container12">
+            <img
+              class="stock-market-icon"
+              loading="lazy"
+              alt=""
+              src="{% static 'images/stockmarket@2x.png' %}"
+            />
+          </div>
+          <div class="frame-parent">
+            <div class="frame-group">
+              <div class="frame-wrapper">
+                <div class="verification-trading-headers">
+                  <b class="registration-icon">4</b>
+                  <b class="b3">ТОРГОВЛЯ</b>
+                </div>
+              </div>
+              <b class="pocket-option"
+                >Торговать на Pocket Option легко! Выберите торговый актив,
+                настройте предпочтительный тип графика и включите индикаторы для
+                лучшего анализа рынка. Установите сумму сделки, время покупки и
+                разместите заказ на понижение или повышение цены.</b
+              >
+            </div>
+            <b class="trading-broker1"
+              >Торговля на Trading Broker очень проста. Вам понадобится всего
+              несколько вещей, чтобы легко ориентироваться в торговом
+              интерфейсе. Начните выбор с предпочтительного торгового актива и
+              установите тип графика.</b
+            >
+          </div>
+        </section>
+        <section class="section6">
+          <div class="profit-container-parent">
+            <div class="profit-container">
+              <div class="deposit-details">
+                <div class="verification-trading-headers">
+                  <b class="registration-icon">5</b>
+                  <b class="b3">ПРИБЫЛЬ</b>
+                </div>
+              </div>
+              <b class="pocket-option"
+                >Каждый правильный прогноз приносит прибыль. Сумма инвестиции
+                плюс полученная прибыль автоматически добавляются к балансу
+                вашего торгового счета. Грамотно управляйте вашим доходом,
+                инвестируйте дальше или снимайте прибыль.</b
+              >
+            </div>
+            <b class="b10"
+              >Каждый правильный прогноз приносит прибыль — изначально сумма
+              инвестиции торгового ордера и полученная прибыль автоматически
+              добавляются к балансу вашего счета.</b
+            >
+          </div>
+          <div class="container13">
+            <img
+              class="graph-icon"
+              loading="lazy"
+              alt=""
+              src="{% static 'images/graph@2x.png' %}"
+            />
+          </div>
+        </section>
+        <section class="section7">
+          <div class="container14">
+            <div class="container15">
+              <img
+                class="withdraw-icon"
+                loading="lazy"
+                alt=""
+                src="{% static 'images/withdraw@2x.png' %}"
+              />
+            </div>
+            <div class="container16">
+              <div class="balance-info">
+                <div class="balance-intro">
+                  <div class="withdraw-title">
+                    <b class="withdraw-amount">6</b>
+                    <b class="b">ВЫВОД СРЕДСТВ</b>
+                  </div>
+                </div>
+                <b class="b12"
+                  >Вы можете вывести баланс вашего торгового счета в любое время
+                  без каких-либо ограничений по сумме. Разместите запрос на
+                  снятие средств с помощью методов, ранее использовавшихся для
+                  внесения депозита, и дождитесь его обработки и отправки.</b
+                >
+              </div>
+              <b class="b13"
+                >В зависимости от выбранного метода может потребоваться
+                некоторое время, чтобы перевод отразился на вашем счете.</b
+              >
+            </div>
+          </div>
+        </section>
+        <footer class="footer">
+          <div class="footer-content">
+            <div class="footer-left">
+              <div class="background">
+                <img
+                  class="icon-risksvg-fill"
+                  loading="lazy"
+                  alt=""
+                  src="{% static 'images/iconrisksvg-fill.svg' %}"
+                />
+
+                <b class="b14">Предупреждение о рисках:</b>
+              </div>
+              <div class="forex-container">
+                <span>
+                  <p class="forex">
+                    Торговля на финансовых рынках сопряжена с риском. Forex и
+                    другие финансовые контракты являются сложными финансовыми
+                    инструментами, используемыми для маржинальной торговли.
+                    Торговля имеет высокий уровень риска, так как
+                  </p>
+                  <p class="forex">
+                    кредитное плечо может работать как в вашу пользу, так и
+                    против вас. Вследствие этого торговля подходит не всем
+                    инвесторам из-за высокого риска потери инвестированного
+                    капитала. Вы не должны рисковать большими средствами, чем
+                  </p>
+                  <p class="forex">
+                    вы готовы потерять. Перед началом торговли вы должны
+                    убедиться, что вы понимаете все риски и учитываете их в
+                    совокупности с уровнем вашего опыта при постановке ваших
+                    инвестиционных целей.
+                  </p>
+                </span>
+              </div>
+            </div>
+            <div class="link7">
+              <div class="div4">Предупреждение о рисках</div>
+            </div>
+          </div>
+          <div class="footer-right">
+            <div class="footer-links">
+              <div class="links-container">
+                <div class="links-list">
+                  <div class="item-link">
+                    <div class="div5">Контакты</div>
+                  </div>
+                  <div class="item-link">
+                    <div class="div5">Условия предоставления сервиса</div>
+                  </div>
+                  <div class="item-link">
+                    <div class="aml-kyc">Политика AML и KYC</div>
+                  </div>
+                  <div class="item-link">
+                    <div class="div5">Политика конфиденциальности</div>
+                  </div>
+                  <div class="item-link">
+                    <div class="aml-kyc">Политика платежей</div>
+                  </div>
+                  <div class="item-link">
+                    <div class="aml-kyc">Регуляторная политика</div>
+                  </div>
+                </div>
+                <div class="copyright">
+                  <div class="company-name">
+                    <div class="trading-broker2">Trading Broker</div>
+                  </div>
+                  <img
+                    class="company-logo-icon"
+                    loading="lazy"
+                    alt=""
+                    src="{% static 'images/vector.svg' %}"
+                  />
+                </div>
+              </div>
+            </div>
+            <img
+              class="imagebackgroundshadow-icon"
+              loading="lazy"
+              alt=""
+              src="{% static 'images/imagebackgroundshadow.svg' %}"
+            />
+          </div>
+        </footer>
+      </main>
+      <div class="registration-form">
+        <div class="form-container">
+          <div class="button1" id="registerTab">
+            <div class="button-child"></div>
+            <div class="registration-button-background"></div>
+            <div class="wrapper">
+              <a class="a5">РЕГИСТРАЦИЯ</a>
+            </div>
+          </div>
+          <button class="button2" id="loginTab">
+            <div class="button-item"></div>
+            <a class="a6">ВОЙТИ</a>
+          </button>
+        </div>
+        <div class="login-form">
+          <div class="login-form-container">
+            <form id="registrationForm" method="post" action="{% url 'register' %}">
+              {% csrf_token %}
+              <div class="email-input">
+                <label for="id_username" class="email">Email</label>
+                <div class="email-field">
+                  <input type="text" name="username" id="id_username" required>
+                </div>
+              </div>
+              <div class="email-field">
+                <div class="password-container">
+                  <div class="password-field">
+                    <label for="id_password1" class="div10">Пароль</label>
+                    <div class="email-field">
+                      <input type="password" name="password1" id="id_password1" required>
+                    </div>
+                  </div>
+                  <div class="password-field">
+                    <label for="id_password2" class="div10">Подтвердите пароль</label>
+                    <div class="email-field">
+                      <input type="password" name="password2" id="id_password2" required>
+                    </div>
+                  </div>
+                  <div class="agreement-checkbox">
+                    <div class="checkbox-container">
+                      <div class="checkbox-icon-wrapper">
+                        <div class="checkbox-icon">
+                          <input type="checkbox" id="agreement" required>
+                          <label for="agreement">
+                            <img class="checkmark-icon" alt="" src="{% static 'images/vector-1.svg' %}">
+                          </label>
+                        </div>
+                      </div>
+                      <div class="agreement-label-parent">
+                        <div class="agreement-label">
+                          <div class="div11">Я прочитал и принял соглашение:</div>
+                          <div class="div12">Договор о предоставлении услуг</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="submit-button">
+                    <button type="submit" class="button3">
+                      <div class="button-inner"></div>
+                      <b class="b15">РЕГИСТРАЦИЯ</b>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </form>
+            <div class="social-login">
+              <div class="social-login-container">
+                <div class="indicator">Или зарегистрируйтесь через</div>
+                <div class="google-login">
+                  <button class="link8">
+                    <img class="image-icon" alt="" src="{% static 'images/image@2x.png' %}">
+                    <b class="google2">Google</b>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        const registerTab = document.getElementById('registerTab');
+        const loginTab = document.getElementById('loginTab');
+        const registrationForm = document.getElementById('registrationForm');
+      
+        registerTab.addEventListener('click', function(e) {
+          e.preventDefault();
+          // Здесь можно добавить логику для отображения формы регистрации, если нужно
+        });
+      
+        loginTab.addEventListener('click', function(e) {
+          e.preventDefault();
+          window.location.href = "{% url 'login' %}";
+        });
+      
+        registrationForm.addEventListener('submit', function(e) {
+          e.preventDefault();
+          
+          // Здесь можно добавить клиентскую валидацию формы, если нужно
+      
+          // Отправка формы
+          this.submit();
+        });
+      });
+      </script>
+      {% endblock %}
