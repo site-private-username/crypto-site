@@ -681,7 +681,7 @@
   line-height: 1.063rem;
   text-transform: uppercase;
   font-family: var(--pocketoptioncom-nunito-sans-bold-16-upper);
-  color: #004d45;
+  color: #ffffff;
   text-align: center;
 }
 .button1 {
@@ -725,7 +725,7 @@
 }
 .app-panel {
   width: 15.625rem;
-  height: 55rem;
+  height: 60rem;
   background-color: #1e1f22;
   border-left: 1px solid var(--color-dimgray-100);
   box-sizing: border-box;

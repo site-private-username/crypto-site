@@ -6,6 +6,107 @@
     <title>{% block title %}Crypto Trading Simulation{% endblock %}</title>
 </head>
 <body>
+    <style>
+       body {
+        background-color: #1a1a1a;
+        color: #e0e0e0;
+        font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        h2, h3 {
+            color: #4CAF50;
+        }
+
+        select, input[type="text"], input[type="number"] {
+            background-color: #333;
+            color: #e0e0e0;
+            border: 1px solid #4CAF50;
+            padding: 8px;
+            border-radius: 4px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        li {
+            background-color: #333;
+            margin-bottom: 10px;
+            padding: 10px;
+            border-radius: 4px;
+        }
+
+        #candlestickChart {
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        form {
+            background-color: #2a2a2a;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+        }
+        nav {
+            background-color: #333;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 16px;
+            margin: 0 5px;
+            border-radius: 3px;
+            transition: background-color 0.3s;
+            display: inline-block;
+        }
+        nav a:hover {
+            background-color: #555;
+        }
+        @media (max-width: 600px) {
+            nav {
+                display: flex;
+                flex-direction: column;
+            }
+            nav a {
+                margin: 5px 0;
+            }
+        }
+    </style>
     <nav>
         <a href="{% url 'home' %}">Home</a>
         {% if user.is_authenticated %}

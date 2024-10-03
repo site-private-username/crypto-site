@@ -1,4 +1,4 @@
-{% extends 'trading/base.html' %}
+
 {% load static %}
 
 {% block content %}
@@ -34,6 +34,15 @@
             padding: 10px;
             width: 100%;
             font-size: 16px;
+        }
+        .text-def {
+          position: relative;
+          font-size: var(--pocketoptioncom-nunito-sans-bold-16-upper-size);
+          line-height: 1.063rem;
+          text-transform: uppercase;
+          font-family: var(--pocketoptioncom-nunito-sans-bold-16-upper);
+          color: #ffffff;
+          text-align: center;
         }
         .bet-form-label {
             color: #888888;
@@ -229,13 +238,47 @@
                 </div>
               </div>
               <button class="button1" type="submit" name="place_bet" value="UP">
-                <b class="b">Buy</b>
+                <b class="text-def">КУПИТЬ</b>
             </button>
             <button class="button2" type="submit" name="place_bet" value="DOWN">
-                <b class="b1">Sell</b>
+                <b class="text-def">ПРОДАТЬ</b>
             </button>
-
+     
+            <style>
             
+              nav a {
+                  color: white;
+                  text-decoration: none;
+                  padding: 8px 16px;
+                  margin: 0 5px;
+                  border-radius: 3px;
+                  transition: background-color 0.3s;
+                  display: inline-block;
+              }
+              nav a:hover {
+                  background-color: #555;
+              }
+              @media (max-width: 600px) {
+                  nav {
+                      display: flex;
+                      flex-direction: column;
+                  }
+                  nav a {
+                      margin: 5px 0;
+                  }
+              }
+          </style>
+          <nav>
+              <a href="{% url 'home' %}">Home</a>
+              {% if user.is_authenticated %}
+                  <a href="{% url 'trade_history' %}">Trade History</a>
+                  <a href="{% url 'admin_panel' %}">Admin Panel</a>
+                  <a href="{% url 'logout' %}">Logout</a>
+              {% else %}
+                  <a href="{% url 'login' %}">Login</a>
+                  <a href="{% url 'register' %}">Register</a>
+              {% endif %}
+          </nav>
         </form>
  
       </main>

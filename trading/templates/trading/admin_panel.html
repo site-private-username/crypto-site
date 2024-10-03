@@ -1,65 +1,71 @@
 {% extends 'trading/base.html' %}
 {% load static %}
 
+{% block extra_head %}
+
+{% endblock %}
+
 {% block content %}
-<h2>Admin Panel</h2>
-<p>Your balance: ${{ user.userprofile.balance }}</p>
+<div class="container">
+    <h2>Admin Panel</h2>
+    <p>Your balance: ${{ user.userprofile.balance }}</p>
 
-<form method="get">
-    <label for="chart_type">Select Chart Type:</label>
-    <select name="chart_type" id="chart_type" onchange="this.form.submit()">
-        {% for chart_type in chart_types %}
-            <option value="{{ chart_type.id }}" {% if chart_type == selected_chart_type %}selected{% endif %}>
-                {{ chart_type.name }}
-            </option>
+    <form method="get">
+        <label for="chart_type">Select Chart Type:</label>
+        <select name="chart_type" id="chart_type" onchange="this.form.submit()">
+            {% for chart_type in chart_types %}
+                <option value="{{ chart_type.id }}" {% if chart_type == selected_chart_type %}selected{% endif %}>
+                    {{ chart_type.name }}
+                </option>
+            {% endfor %}
+        </select>
+    </form>
+
+    <div id="candlestickChart" style="width: 100%; height: 400px;"></div>
+
+    <h3>Current Price: ${{ current_price }}</h3>
+
+    {% if last_candle %}
+    <h3>Last Added Candle for {{ selected_chart_type.name }}</h3>
+    <ul>
+        <li>Time: {{ last_candle.time }}</li>
+        <li>Open: ${{ last_candle.open_price }}</li>
+        <li>Close: ${{ last_candle.close_price }}</li>
+        <li>High: ${{ last_candle.max_price }}</li>
+        <li>Low: ${{ last_candle.min_price }}</li>
+    </ul>
+    {% else %}
+    <p>No candles available for {{ selected_chart_type.name }}</p>
+    {% endif %}
+
+    <h3>Add New Candle</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ candle_form.as_p }}
+        <button type="submit" name="add_candle">Add Candle</button>
+    </form>
+
+    <h3>Add Manual Control</h3>
+    <form method="post">
+        {% csrf_token %}
+        {{ manual_control_form.as_p }}
+        <button type="submit" name="add_manual_control">Add Manual Control</button>
+    </form>
+
+    <h3>Recent Manual Controls</h3>
+    <ul>
+        {% for control in manual_controls %}
+        <li>Time: {{ control.time }}, Value: {{ control.value }}</li>
         {% endfor %}
-    </select>
-</form>
+    </ul>
 
-<div id="candlestickChart" style="width: 100%; height: 400px;"></div>
-
-<h3>Current Price: ${{ current_price }}</h3>
-
-{% if last_candle %}
-<h3>Last Added Candle for {{ selected_chart_type.name }}</h3>
-<ul>
-    <li>Time: {{ last_candle.time }}</li>
-    <li>Open: ${{ last_candle.open_price }}</li>
-    <li>Close: ${{ last_candle.close_price }}</li>
-    <li>High: ${{ last_candle.max_price }}</li>
-    <li>Low: ${{ last_candle.min_price }}</li>
-</ul>
-{% else %}
-<p>No candles available for {{ selected_chart_type.name }}</p>
-{% endif %}
-
-<h3>Add New Candle</h3>
-<form method="post">
-    {% csrf_token %}
-    {{ candle_form.as_p }}
-    <button type="submit" name="add_candle">Add Candle</button>
-</form>
-
-<h3>Add Manual Control</h3>
-<form method="post">
-    {% csrf_token %}
-    {{ manual_control_form.as_p }}
-    <button type="submit" name="add_manual_control">Add Manual Control</button>
-</form>
-
-<h3>Recent Manual Controls</h3>
-<ul>
-    {% for control in manual_controls %}
-    <li>Time: {{ control.time }}, Value: {{ control.value }}</li>
-    {% endfor %}
-</ul>
-
-<h3>Recent Candles</h3>
-<ul>
-    {% for candle in candles %}
-    <li>Time: {{ candle.time }}, Open: {{ candle.open_price }}, Close: {{ candle.close_price }}, Min: {{ candle.min_price }}, Max: {{ candle.max_price }}</li>
-    {% endfor %}
-</ul>
+    <h3>Recent Candles</h3>
+    <ul>
+        {% for candle in candles %}
+        <li>Time: {{ candle.time }}, Open: {{ candle.open_price }}, Close: {{ candle.close_price }}, Min: {{ candle.min_price }}, Max: {{ candle.max_price }}</li>
+        {% endfor %}
+    </ul>
+</div>
 
 <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 <script>
@@ -74,22 +80,38 @@
         }],
         chart: {
             type: 'candlestick',
-            height: 400
+            height: 400,
+            background: '#2a2a2a',
+            foreColor: '#e0e0e0'
         },
         title: {
             text: '{{ selected_chart_type.name }} Candlestick Chart',
-            align: 'left'
+            align: 'left',
+            style: {
+                color: '#4CAF50'
+            }
         },
         xaxis: {
-            type: 'datetime'
+            type: 'datetime',
+            labels: {
+                style: {
+                    colors: '#e0e0e0'
+                }
+            }
         },
         yaxis: {
             tooltip: {
                 enabled: true
+            },
+            labels: {
+                style: {
+                    colors: '#e0e0e0'
+                }
             }
         },
         tooltip: {
             enabled: true,
+            theme: 'dark',
             custom: function({seriesIndex, dataPointIndex, w}) {
                 var o = w.globals.seriesCandleO[seriesIndex][dataPointIndex]
                 var h = w.globals.seriesCandleH[seriesIndex][dataPointIndex]
