@@ -29,7 +29,7 @@ SECRET_KEY = "django-insecure-9qbn1#2arxo3)6qz=idfid4$l)2!4ddh%g^0^8xeg-69$r*@be
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+
 
 import os
 from pathlib import Path
@@ -57,6 +57,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "crypto_simulation.urls"
 
+
+ALLOWED_HOSTS = ['crypto-site-uzb-82e6535214cc.herokuapp.com', 'localhost', '127.0.0.1', '0.0.0.0']
 
 TEMPLATES = [
     {
