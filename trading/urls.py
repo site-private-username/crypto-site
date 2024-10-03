@@ -1,18 +1,24 @@
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from rest_framework_simplejwt.views import TokenRefreshView
 from . import views
-from django.contrib.auth import views as auth_views
-from django.conf import settings
-from django.conf.urls.static import static
-from django.contrib.auth.views import LogoutView
+
+router = DefaultRouter()
+router.register(r'chart-types', views.ChartTypeViewSet, basename='chart-type')
+router.register(r'candles', views.CandleViewSet, basename='candle')
+router.register(r'bets', views.BetViewSet, basename='bet')
+router.register(r'manual-controls', views.ManualControlViewSet, basename='manual-control')
 
 urlpatterns = [
-    path('', views.home, name='home'),
-    path('register/', views.register, name='register'),
-    path('login/', auth_views.LoginView.as_view(template_name='trading/login.html'), name='login'),
-    path('logout/', views.user_logout, name='logout'),
-    path('dashboard/', views.dashboard, name='dashboard'),
-    path('profile/', views.profile, name='profile'),
-    path('history/', views.trade_history, name='trade_history'),
-    path('admin_panel/', views.admin_panel, name='admin_panel'),
+    # API root
+    path('', views.api_root, name='api-root'),
     
-]+ static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
+    # Router URLs
+    path('', include(router.urls)),
+    
+    # Auth endpoints
+    path('register/', views.RegisterView.as_view(), name='register'),
+    path('login/', views.LoginView.as_view(), name='login'),
+    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('profile/', views.UserProfileView.as_view(), name='profile'),
+]
