@@ -9,6 +9,7 @@ from rest_framework.viewsets import ModelViewSet
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.db import transaction
+import decimal
 from django.db.models import Sum
 from django.utils import timezone
 from .serializers import (
@@ -129,3 +130,60 @@ class ManualControlViewSet(ModelViewSet):
 
     def perform_create(self, serializer):
         serializer.save()
+
+
+class BetViewSet(ModelViewSet):
+    serializer_class = BetSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return Bet.objects.filter(user=self.request.user).order_by('-created_at')
+
+    @action(detail=False, methods=['post'])
+    def place(self, request):
+        serializer = self.get_serializer(data=request.data)
+        
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            
+        try:
+            with transaction.atomic():
+                user_profile = request.user.userprofile
+                amount = serializer.validated_data['amount']
+
+                # Проверяем баланс
+                if user_profile.balance < amount:
+                    return Response({
+                        'error': 'Insufficient balance',
+                        'detail': f'Your current balance ({user_profile.balance}) is less than the bet amount ({amount})'
+                    }, status=status.HTTP_400_BAD_REQUEST)
+
+                # Создаем ставку
+                bet = serializer.save(user=request.user)
+                
+                # Обновляем баланс пользователя
+                user_profile.balance -= amount
+                user_profile.save()
+
+                # Получаем свежий сериализатор для ответа
+                response_serializer = self.get_serializer(bet)
+                return Response(response_serializer.data, status=status.HTTP_201_CREATED)
+
+        except Exception as e:
+            return Response({
+                'error': 'Failed to place bet',
+                'detail': str(e)
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+
+    @action(detail=False, methods=['get'])
+    def statistics(self, request):
+        bets = self.get_queryset()
+        total_profit = bets.filter(result='WIN').aggregate(Sum('amount'))['amount__sum'] or 0
+        total_loss = bets.filter(result='LOSS').aggregate(Sum('amount'))['amount__sum'] or 0
+        
+        return Response({
+            'total_profit': str(total_profit),
+            'total_loss': str(total_loss),
+            'total_bets': bets.count(),
+            'pending_bets': bets.filter(result='PENDING').count()
+        })

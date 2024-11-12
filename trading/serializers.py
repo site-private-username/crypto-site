@@ -88,3 +88,53 @@ class ManualControlSerializer(serializers.ModelSerializer):
         if value > max_time:
             raise serializers.ValidationError("Time cannot be more than 1 minute in the future")
         return value
+
+class BetSerializer(serializers.ModelSerializer):
+    user = UserSerializer(read_only=True)
+    chart_type = ChartTypeSerializer(read_only=True)
+    chart_type_id = serializers.PrimaryKeyRelatedField(
+        source='chart_type',
+        queryset=ChartType.objects.all(),
+        write_only=True
+    )
+
+    class Meta:
+        model = Bet
+        fields = [
+            'id', 
+            'user',
+            'chart_type',
+            'chart_type_id',
+            'amount',
+            'direction',
+            'entry_price',
+            'timeframe',
+            'created_at',
+            'expires_at',
+            'result'
+        ]
+        read_only_fields = ['id', 'created_at', 'expires_at', 'result']
+
+    def validate_amount(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Bet amount must be greater than 0")
+        return value
+
+    def validate_entry_price(self, value):
+        if value <= 0:
+            raise serializers.ValidationError("Entry price must be greater than 0")
+        return value
+
+    def validate_direction(self, value):
+        if value not in dict(Bet.DIRECTION_CHOICES):
+            raise serializers.ValidationError(
+                f"Direction must be one of: {', '.join(dict(Bet.DIRECTION_CHOICES).keys())}"
+            )
+        return value
+
+    def validate_timeframe(self, value):
+        if value not in dict(Bet.TIMEFRAME_CHOICES):
+            raise serializers.ValidationError(
+                f"Timeframe must be one of: {', '.join(dict(Bet.TIMEFRAME_CHOICES).keys())}"
+            )
+        return value

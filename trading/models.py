@@ -39,18 +39,50 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     instance.userprofile.save()
 
+# models.py
+from django.db import models
+from django.contrib.auth.models import User
+from django.utils import timezone
+
 class Bet(models.Model):
+    DIRECTION_CHOICES = [('UP', 'Up'), ('DOWN', 'Down')]
+    RESULT_CHOICES = [('WIN', 'Win'), ('LOSS', 'Loss'), ('PENDING', 'Pending')]
+    TIMEFRAME_CHOICES = [
+        ('1m', '1 Minute'),
+        ('5m', '5 Minutes'),
+        ('15m', '15 Minutes'),
+        ('30m', '30 Minutes'),
+        ('1h', '1 Hour')
+    ]
+
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    chart_type = models.ForeignKey(ChartType, on_delete=models.CASCADE)
+    chart_type = models.ForeignKey('ChartType', on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
-    duration = models.DateTimeField(default=timezone.now())
-    prediction = models.CharField(max_length=10, choices=[('UP', 'Up'), ('DOWN', 'Down')])
+    direction = models.CharField(max_length=4, choices=DIRECTION_CHOICES)
+    entry_price = models.DecimalField(max_digits=20, decimal_places=8)
+    timeframe = models.CharField(max_length=3, choices=TIMEFRAME_CHOICES)
     created_at = models.DateTimeField(auto_now_add=True)
-    result = models.CharField(max_length=10, choices=[('WIN', 'Win'), ('LOSS', 'Loss'), ('PENDING', 'Pending')], default='PENDING')
+    expires_at = models.DateTimeField()
+    result = models.CharField(
+        max_length=7, 
+        choices=RESULT_CHOICES, 
+        default='PENDING'
+    )
 
     def __str__(self):
-        return f"{self.user.username}'s bet of ${self.amount} on {self.chart_type.symbol} {self.prediction}"
+        return f"{self.user.username}'s {self.direction} bet of ${self.amount} on {self.chart_type.symbol}"
 
+    def save(self, *args, **kwargs):
+        if not self.expires_at:
+            duration_map = {
+                '1m': timezone.timedelta(minutes=1),
+                '5m': timezone.timedelta(minutes=5),
+                '15m': timezone.timedelta(minutes=15),
+                '30m': timezone.timedelta(minutes=30),
+                '1h': timezone.timedelta(hours=1)
+            }
+            self.expires_at = timezone.now() + duration_map[self.timeframe]
+        super().save(*args, **kwargs)
 
 
 class ManualControl(models.Model):

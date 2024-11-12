@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Candle, UserProfile, Bet
+from .models import Candle, UserProfile, Bet, ChartType
 
 @admin.register(Candle)
 class CandleAdmin(admin.ModelAdmin):
@@ -14,6 +14,11 @@ class UserProfileAdmin(admin.ModelAdmin):
 
 @admin.register(Bet)
 class BetAdmin(admin.ModelAdmin):
-    list_display = ('user', 'amount', 'prediction', 'created_at', 'result')
-    list_filter = ('prediction', 'result', 'created_at')
+    list_display = ('user', 'amount', 'direction', 'created_at', 'result')  # Changed 'prediction' to 'direction'
+    list_filter = ('direction', 'result', 'created_at')  # Changed 'prediction' to 'direction'
     search_fields = ('user__username',)
+
+@admin.register(ChartType)
+class ChartAdmin(admin.ModelAdmin):
+    list_display = ('name', 'symbol')
+    search_fields = ('name',)
