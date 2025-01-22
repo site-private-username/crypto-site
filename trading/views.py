@@ -137,8 +137,10 @@ class BetViewSet(ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
+        print(self.request.user, "PIZDA")
         return Bet.objects.filter(user=self.request.user).order_by('-created_at')
 
+    
     @action(detail=False, methods=['post'])
     def place(self, request):
         serializer = self.get_serializer(data=request.data)
@@ -159,7 +161,7 @@ class BetViewSet(ModelViewSet):
                     }, status=status.HTTP_400_BAD_REQUEST)
 
                 # Создаем ставку
-                bet = serializer.save(user=request.user)
+                bet = serializer.save()
                 
                 # Обновляем баланс пользователя
                 user_profile.balance -= amount

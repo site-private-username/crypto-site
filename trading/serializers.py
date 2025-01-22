@@ -48,28 +48,28 @@ class UserProfileSerializer(serializers.ModelSerializer):
         fields = ('id', 'username', 'balance')
         read_only_fields = ('balance',)
 
-class BetSerializer(serializers.ModelSerializer):
-    username = serializers.CharField(source='user.username', read_only=True)
-    chart_symbol = serializers.CharField(source='chart_type.symbol', read_only=True)
+# class BetSerializer(serializers.ModelSerializer):
+#     username = serializers.CharField(source='user.username', read_only=True)
+#     chart_symbol = serializers.CharField(source='chart_type.symbol', read_only=True)
     
-    class Meta:
-        model = Bet
-        fields = ('id', 'user', 'username', 'chart_type', 'chart_symbol', 'amount', 
-                 'duration', 'prediction', 'created_at', 'result')
-        read_only_fields = ('user', 'created_at', 'result')
+#     class Meta:
+#         model = Bet
+#         fields = ('id', 'user', 'username', 'chart_type', 'chart_symbol', 'amount', 
+#                  'duration', 'prediction', 'created_at', 'result')
+#         read_only_fields = ('user', 'created_at', 'result')
 
-    def validate_amount(self, value):
-        user = self.context['request'].user
-        if value > user.userprofile.balance:
-            raise serializers.ValidationError("Insufficient funds")
-        if value <= 0:
-            raise serializers.ValidationError("Bet amount must be positive")
-        return value
+#     def validate_amount(self, value):
+#         user = self.context['request'].user
+#         if value > user.userprofile.balance:
+#             raise serializers.ValidationError("Insufficient funds")
+#         if value <= 0:
+#             raise serializers.ValidationError("Bet amount must be positive")
+#         return value
 
-    def validate_duration(self, value):
-        if value < timezone.now():
-            raise serializers.ValidationError("Duration cannot be in the past")
-        return value
+#     def validate_duration(self, value):
+#         if value < timezone.now():
+#             raise serializers.ValidationError("Duration cannot be in the past")
+#         return value
 
 class ManualControlSerializer(serializers.ModelSerializer):
     chart_name = serializers.CharField(source='chart_type.name', read_only=True)
@@ -132,9 +132,7 @@ class BetSerializer(serializers.ModelSerializer):
             )
         return value
 
-    def validate_timeframe(self, value):
-        if value not in dict(Bet.TIMEFRAME_CHOICES):
-            raise serializers.ValidationError(
-                f"Timeframe must be one of: {', '.join(dict(Bet.TIMEFRAME_CHOICES).keys())}"
-            )
-        return value
+    def create(self, validated_data):
+        # Get the user from the request context
+        validated_data['user'] = self.context['request'].user
+        return super().create(validated_data)

@@ -1,9 +1,11 @@
+
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
 from django.dispatch import receiver
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.utils import timezone
+from datetime import timedelta
 
 class ChartType(models.Model):
     name = models.CharField(max_length=50, unique=True)
@@ -47,20 +49,13 @@ from django.utils import timezone
 class Bet(models.Model):
     DIRECTION_CHOICES = [('UP', 'Up'), ('DOWN', 'Down')]
     RESULT_CHOICES = [('WIN', 'Win'), ('LOSS', 'Loss'), ('PENDING', 'Pending')]
-    TIMEFRAME_CHOICES = [
-        ('1m', '1 Minute'),
-        ('5m', '5 Minutes'),
-        ('15m', '15 Minutes'),
-        ('30m', '30 Minutes'),
-        ('1h', '1 Hour')
-    ]
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     chart_type = models.ForeignKey('ChartType', on_delete=models.CASCADE)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
     direction = models.CharField(max_length=4, choices=DIRECTION_CHOICES)
     entry_price = models.DecimalField(max_digits=20, decimal_places=8)
-    timeframe = models.CharField(max_length=3, choices=TIMEFRAME_CHOICES)
+    timeframe = models.IntegerField(default=1)
     created_at = models.DateTimeField(auto_now_add=True)
     expires_at = models.DateTimeField()
     result = models.CharField(
@@ -74,14 +69,9 @@ class Bet(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.expires_at:
-            duration_map = {
-                '1m': timezone.timedelta(minutes=1),
-                '5m': timezone.timedelta(minutes=5),
-                '15m': timezone.timedelta(minutes=15),
-                '30m': timezone.timedelta(minutes=30),
-                '1h': timezone.timedelta(hours=1)
-            }
-            self.expires_at = timezone.now() + duration_map[self.timeframe]
+            time_delta = timedelta(minutes=self.timeframe)
+            future_time = timezone.now() + time_delta
+            self.expires_at = future_time
         super().save(*args, **kwargs)
 
 
