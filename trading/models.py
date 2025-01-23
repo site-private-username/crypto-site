@@ -1,4 +1,3 @@
-
 from django.db import models
 from django.contrib.auth.models import User
 from django.db.models.signals import post_save
@@ -24,6 +23,16 @@ class Candle(models.Model):
 
     def __str__(self):
         return f"{self.chart_type.symbol} Candle at {self.time}"
+
+
+class PriceStamp(models.Model):
+    chart_type = models.ForeignKey(ChartType, on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=20, decimal_places=8)
+    time = models.DateTimeField(default=timezone.now)
+
+    def __str__(self):
+        return f"{self.chart_type.symbol} - {self.price}"
+
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)

@@ -42,10 +42,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'trading',
     'rest_framework',
     'rest_framework_simplejwt',
+    'channels',
+    'trading', 
 ]
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}
+
 
 
 REST_FRAMEWORK = {
@@ -111,7 +119,7 @@ TEMPLATES = [
 ]
 WSGI_APPLICATION = "crypto_simulation.wsgi.application"
 
-
+ASGI_APPLICATION = "crypto_simulation.asgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
