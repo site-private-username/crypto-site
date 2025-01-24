@@ -72,8 +72,6 @@ def create_candle_from_price_stamps(self, chart_type, price_stamps):
         max_price=max_price
     )
     
-    # Удаление всех 5 использованных PriceStamp
-    PriceStamp.objects.filter(id__in=[p.id for p in price_stamps]).delete()
     
     self.stdout.write(self.style.SUCCESS(
         f"Created a new candle for {chart_type.symbol} with open: {open_price}, close: {close_price}, min: {min_price}, max: {max_price}"
