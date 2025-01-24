@@ -49,7 +49,7 @@ class Command(BaseCommand):
                 amount = Decimal(random.uniform(10, 100)).quantize(Decimal('0.01'))
                 direction = random.choice(['UP', 'DOWN'])
                 entry_price = random.uniform(30000, 40000)
-                timeframe = random.choice(['1m', '5m', '15m', '30m', '1h'])
+                timeframe = random.choice([1, 5, 15, 30, 60])  # Целые числа, представляющие минуты
                 created_at = timezone.now() - timezone.timedelta(days=random.randint(0, 30))
                 chart_type = random.choice(chart_types)
                 result = random.choice(['WIN', 'LOSS', 'PENDING'])
