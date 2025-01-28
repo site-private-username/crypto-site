@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'channels',
     'trading', 
+    'background_task',
 ]
 
 CHANNEL_LAYERS = {
@@ -78,6 +79,24 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "crypto_simulation.urls"
 
+CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'  # URL RabbitMQ
+CELERY_RESULT_BACKEND = 'rpc://'  # Этот параметр задает механизм хранения результатов задач
+
+# Дополнительные параметры для Celery
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = 'UTC'
+
+# Configure periodic tasks
+from celery.schedules import crontab
+
+CELERY_BEAT_SCHEDULE = {
+    'process-bets-every-30-seconds': {
+        'task': 'trading.tasks.process_bets',
+        'schedule': 30.0,  # Every 30 seconds
+    },
+}
 
 ALLOWED_HOSTS = ['crypto-site-uzb-82e6535214cc.herokuapp.com', 'localhost', '127.0.0.1', '0.0.0.0']
 
