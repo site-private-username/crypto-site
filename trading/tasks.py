@@ -1,3 +1,6 @@
+import string
+import random
+
 from celery import shared_task
 from django.utils import timezone
 from django.db import transaction
@@ -68,3 +71,25 @@ def process_bets():
             print(f"Error processing bet {bet.id}: {str(e)}")
     
     print("=== Bet processing completed ===\n")
+
+from celery import shared_task
+from channels.layers import get_channel_layer
+from asgiref.sync import async_to_sync
+
+@shared_task
+def test_add(x, y):
+    return x + y
+
+
+@shared_task
+def send_random_string():
+    channel_layer = get_channel_layer()
+    random_str = ''.join(random.choices(string.ascii_letters, k=8))
+    print(random_str)
+    async_to_sync(channel_layer.group_send)(
+        "random_group",
+        {
+            "type": "send_message",
+            "message": random_str,
+        }
+    )

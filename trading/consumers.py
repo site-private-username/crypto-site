@@ -37,3 +37,29 @@ class PriceConsumer(AsyncWebsocketConsumer):
             print("✅ Sent price update to client")
         except Exception as e:
             print(f"❌ Error sending price update: {str(e)}")
+
+
+class TestConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.accept()
+        await self.send(text_data=json.dumps({
+            'message': 'Websocket connection established',
+        }))
+
+    async def receive(self, text_data):
+        await self.send(text_data=json.dumps({
+            'echo': text_data,
+        }))
+
+class RandomConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        await self.channel_layer.group_add("random_group", self.channel_name)
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        await self.channel_layer.group_discard("random_group", self.channel_name)
+
+    async def send_message(self, event):
+        await self.send(text_data=json.dumps({
+            "random_string": event["message"]
+        }))

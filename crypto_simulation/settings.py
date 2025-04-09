@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'channels',
     'trading', 
     'background_task',
+    'django_celery_beat'
 ]
 
 # CHANNEL_LAYERS = {
@@ -67,6 +68,12 @@ CHANNEL_LAYERS = {
     },
 }
 
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -90,24 +97,13 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = "crypto_simulation.urls"
 
-CELERY_BROKER_URL = 'amqp://guest:guest@localhost:5672//'  # URL RabbitMQ
-CELERY_RESULT_BACKEND = 'rpc://'  # Этот параметр задает механизм хранения результатов задач
 
-# Дополнительные параметры для Celery
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TIMEZONE = 'UTC'
 
 # Configure periodic tasks
 from celery.schedules import crontab
 
-CELERY_BEAT_SCHEDULE = {
-    'process-bets-every-30-seconds': {
-        'task': 'trading.tasks.process_bets',
-        'schedule': 30.0,  # Every 30 seconds
-    },
-}
 
 ALLOWED_HOSTS = ['crypto-site-uzb-82e6535214cc.herokuapp.com', 'localhost', '127.0.0.1', '0.0.0.0']
 
@@ -204,6 +200,3 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_REDIRECT_URL = '/home/'
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'your_app/static'),
-]
