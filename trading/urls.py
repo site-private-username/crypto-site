@@ -9,6 +9,8 @@ router.register(r'candles', views.CandleViewSet, basename='candle')
 router.register(r'bets', views.BetViewSet, basename='bet')
 router.register(r'manual-controls', views.ManualControlViewSet, basename='manual-control')
 
+router.register(r'completed-bets', views.CompletedBetViewSet, basename='completed-bet')
+
 urlpatterns = [
     # API root
     path('', views.api_root, name='api-root'),

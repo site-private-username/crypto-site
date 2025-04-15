@@ -14,9 +14,10 @@ from django.db.models import Sum
 from django.utils import timezone
 from .serializers import (
     UserSerializer, UserProfileSerializer, ChartTypeSerializer,
-    CandleSerializer, BetSerializer, ManualControlSerializer
+    CandleSerializer, BetSerializer, ManualControlSerializer, CompletedBetSerializer
 )
-from .models import Candle, Bet, UserProfile, ChartType, ManualControl
+from .models import Candle, Bet, UserProfile, ChartType, ManualControl, CompletedBet
+
 
 @api_view(['GET'])
 def api_root(request, format=None):
@@ -109,6 +110,14 @@ class BetViewSet(ModelViewSet):
             'total_bets': bets.count(),
             'pending_bets': bets.filter(result='PENDING').count()
         })
+
+class CompletedBetViewSet(ModelViewSet):
+    serializer_class = CompletedBetSerializer
+    permission_classes = [permissions.IsAuthenticated]
+
+    def get_queryset(self):
+        return CompletedBet.objects.filter(user=self.request.user).order_by('-created_at')
+
 
 class UserProfileView(APIView):
     permission_classes = [permissions.IsAuthenticated]

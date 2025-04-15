@@ -46,6 +46,7 @@ def create_user_profile(sender, instance, created, **kwargs):
     if created:
         UserProfile.objects.create(user=instance)
 
+
 @receiver(post_save, sender=User)
 def save_user_profile(sender, instance, **kwargs):
     instance.userprofile.save()
@@ -82,6 +83,22 @@ class Bet(models.Model):
             future_time = timezone.now() + time_delta
             self.expires_at = future_time
         super().save(*args, **kwargs)
+
+class CompletedBet(models.Model):
+    RESULT_CHOICES = [('WIN', 'Win'), ('LOSS', 'Loss')]
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    chart_type = models.ForeignKey(ChartType, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    direction = models.CharField(max_length=4, choices=Bet.DIRECTION_CHOICES)
+    entry_price = models.DecimalField(max_digits=20, decimal_places=8)
+    closing_price = models.DecimalField(max_digits=20, decimal_places=8)
+    result = models.CharField(max_length=4, choices=RESULT_CHOICES)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s {self.result} bet on {self.chart_type.symbol}"
+
 
 
 class ManualControl(models.Model):

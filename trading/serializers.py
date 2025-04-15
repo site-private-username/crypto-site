@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from django.contrib.auth.models import User
 from django.utils import timezone
-from .models import Candle, Bet, UserProfile, ChartType, ManualControl
+from .models import Candle, Bet, UserProfile, ChartType, ManualControl, CompletedBet
+
 
 class UserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True)
@@ -136,3 +137,9 @@ class BetSerializer(serializers.ModelSerializer):
         # Get the user from the request context
         validated_data['user'] = self.context['request'].user
         return super().create(validated_data)
+
+class CompletedBetSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompletedBet
+        fields = '__all__'
+        read_only_fields = fields
