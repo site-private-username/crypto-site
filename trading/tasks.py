@@ -8,7 +8,7 @@ from django.db import transaction
 from decimal import Decimal
 from .models import Bet, PriceStamp, CompletedBet
 import logging
-
+from datetime import datetime
 logger = logging.getLogger(__name__)
 
 
@@ -19,7 +19,7 @@ def process_bets():
 
     pending_bets = Bet.objects.filter(
         result="PENDING",
-        expires_at_lte=now
+        expires_at__lte=now
     ).select_related("user__userprofile", "chart_type")
 
     print(f"Found {pending_bets.count()} bets")

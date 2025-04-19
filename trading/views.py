@@ -76,14 +76,67 @@ class ChartTypeViewSet(ModelViewSet):
 
 class CandleViewSet(ModelViewSet):
     serializer_class = CandleSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    permission_classes = [permissions.AllowAny]
 
     def get_queryset(self):
         chart_type_id = self.request.query_params.get('chart_type')
-        queryset = Candle.objects.all()
-        if chart_type_id:
-            queryset = queryset.filter(chart_type_id=chart_type_id)
-        return queryset.order_by('-time')[:30]
+        interval = self.request.query_params.get('interval', '5s')  # по умолчанию 5s
+
+        if not chart_type_id:
+            return Candle.objects.none()
+
+        # базовая выборка по активу
+        queryset = Candle.objects.filter(chart_type_id=chart_type_id).order_by('-time')
+
+        if interval == '5s':
+            return queryset[:30]  # обычный режим
+
+        # поддерживаемые интервалы
+        interval_map = {
+            '10s': 10,
+            '30s': 30,
+            '1m': 60,
+            '2m': 120,
+            '5m': 300,
+        }
+
+        if interval not in interval_map:
+            return queryset.none()  # неподдерживаемый
+
+        base_interval = 5  # ты генерируешь свечи каждые 5 секунд
+        target_interval = interval_map[interval]
+        group_size = target_interval // base_interval
+
+        raw_candles = list(queryset[:group_size * 30])
+        raw_candles = list(reversed(raw_candles))
+
+        aggregated = []
+        for i in range(0, len(raw_candles), group_size):
+            group = raw_candles[i:i+group_size]
+            if len(group) < group_size:
+                break
+
+            candle = {
+                'open_price': group[0].open_price,
+                'close_price': group[-1].close_price,
+                'min_price': min(c.min_price for c in group),
+                'max_price': max(c.max_price for c in group),
+                'time': group[-1].time,
+                'chart_type': group[-1].chart_type.id,
+            }
+            aggregated.append(candle)
+
+        # сериализуем как будто это обычные Candle
+        return Candle.objects.none()  # "обманываем DRF", вернём вручную
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+
+        if queryset.model != Candle:  # агрегированные свечи
+            return Response(queryset, status=status.HTTP_200_OK)
+
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
 
 class BetViewSet(ModelViewSet):
     serializer_class = BetSerializer

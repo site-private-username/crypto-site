@@ -11,11 +11,11 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
-
+from dotenv import load_dotenv
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-ALLOWED_HOSTS = ['crypto-site-uzb-82e6535214cc.herokuapp.com', 'localhost', '127.0.0.1']
+# ALLOWED_HOSTS = ['crypto-site-uzb-82e6535214cc.herokuapp.com', 'localhost', '127.0.0.1']
 
 
 
@@ -34,6 +34,8 @@ DEBUG = True
 import os
 from pathlib import Path
 # Application definition
+
+load_dotenv(os.path.join(BASE_DIR, '.env'))
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -63,15 +65,15 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("127.0.0.1", 6379)],
+            "hosts": [os.getenv("REDIS_URL", "redis://localhost:6379/0")],
         },
     },
 }
 
 
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379/0'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379/0'
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND = os.getenv("CELERY_RESULT_BACKEND")
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 
@@ -104,12 +106,14 @@ CELERY_TIMEZONE = 'UTC'
 # Configure periodic tasks
 from celery.schedules import crontab
 
+USE_TZ = True
+TIME_ZONE = 'UTC'
 
-ALLOWED_HOSTS = ['crypto-site-uzb-82e6535214cc.herokuapp.com', 'localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
 
 from datetime import timedelta
 SIMPLE_JWT = {
-    'ACCESS_TOKEN_LIFETIME': timedelta(minutes=60),
+    'ACCESS_TOKEN_LIFETIME': timedelta(hours=24),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=1),
 }
 
