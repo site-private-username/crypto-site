@@ -139,6 +139,11 @@ class BetSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 class CompletedBetSerializer(serializers.ModelSerializer):
+    result = serializers.SerializerMethodField()
+
     class Meta:
         model = CompletedBet
-        fields = '__all__'
+        fields = '__all__'  # or list specific fields + 'result'
+
+    def get_result(self, obj):
+        return obj.closing_price - obj.entry_price

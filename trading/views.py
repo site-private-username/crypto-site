@@ -138,38 +138,18 @@ class CandleViewSet(ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-class BetViewSet(ModelViewSet):
-    serializer_class = BetSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
-    def get_queryset(self):
-        return Bet.objects.filter(user=self.request.user).order_by('-created_at')
-
-    def perform_create(self, serializer):
-        with transaction.atomic():
-            bet = serializer.save(user=self.request.user)
-            self.request.user.userprofile.balance -= bet.amount
-            self.request.user.userprofile.save()
-
-    @action(detail=False, methods=['get'])
-    def statistics(self, request):
-        bets = self.get_queryset()
-        total_profit = bets.filter(result='WIN').aggregate(Sum('amount'))['amount__sum'] or 0
-        total_loss = bets.filter(result='LOSS').aggregate(Sum('amount'))['amount__sum'] or 0
-        
-        return Response({
-            'total_profit': total_profit,
-            'total_loss': total_loss,
-            'total_bets': bets.count(),
-            'pending_bets': bets.filter(result='PENDING').count()
-        })
 
 class CompletedBetViewSet(ModelViewSet):
     serializer_class = CompletedBetSerializer
     permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
-        return CompletedBet.objects.filter(user=self.request.user).order_by('-created_at')
+        queryset = CompletedBet.objects.filter(user=self.request.user).order_by('-created_at')
+        limit = self.request.query_params.get('limit')
+        if limit is not None and limit.isdigit():
+            queryset = queryset[:int(limit)]
+        return queryset
 
 
 class UserProfileView(APIView):
