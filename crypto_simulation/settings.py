@@ -111,7 +111,8 @@ from celery.schedules import crontab
 USE_TZ = True
 TIME_ZONE = 'UTC'
 
-ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",")
+raw_hosts = os.environ.get("ALLOWED_HOSTS", "")
+ALLOWED_HOSTS = [h.strip() for h in raw_hosts.split(",") if h.strip()]
 
 from datetime import timedelta
 SIMPLE_JWT = {
