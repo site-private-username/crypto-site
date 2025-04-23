@@ -1,5 +1,5 @@
-echo "[+] Starting Django..."
-python manage.py runserver 0.0.0.0:8000 &
+echo "[+] Starting Daphne (ASGI server for Django)..."
+daphne -b 0.0.0.0 -p 8000 crypto_simulation.asgi:application &
 
 echo "[+] Starting Celery worker..."
 celery -A crypto_simulation worker --loglevel=info &
@@ -9,6 +9,5 @@ celery -A crypto_simulation beat --loglevel=info &
 
 echo "[+] Starting RabbitMQ listener..."
 python manage.py start_rabbit_listener &
-
 
 wait -n
